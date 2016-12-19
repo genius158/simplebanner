@@ -11,6 +11,10 @@
       
 # how to use
 ## 
+
+     banner.resumeScroll();//回复
+     banner.pauseScroll();//暂停
+     
      banner.setInterval(5000);
         banner.setPageChangeDuration(500);
         banner.setBannerDataInit(new Banner.BannerDataInit() {
