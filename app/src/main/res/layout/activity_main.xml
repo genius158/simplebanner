@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yan.simplebanner.Banner
+        android:id="@+id/SimpleCycleViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.yan.simplebanner.Banner>
+
+    <com.yan.simplebanner.BannerIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#00ff00">
+
+    </com.yan.simplebanner.BannerIndicator>
+</RelativeLayout>
