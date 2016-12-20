@@ -5,9 +5,9 @@
 
 # include lib
  Gradle:
-      个人并不提倡引包，本身作也就两个类，直接拷贝到项目会更方便，也好改indicator。
+      个人并不提倡引包，本身作也就两个类，直接拷贝到项目会更方便，也好改indicator。
  
-      compile 'com.yan.simplebanner:simplebanner:1.0.0'
+        compile 'com.yan.simplebanner:simplebanner:1.0.0'
       
 # how to use
 ## 
@@ -20,18 +20,16 @@
         banner.setBannerDataInit(new Banner.BannerDataInit() {
             @Override
             public ImageView initImageView() {
+                //设置图片加载的控件（如：Fresco 这里可以传入SimpleDraweeView）
                 return (ImageView) getLayoutInflater().inflate(R.layout.imageview, null);
             }
 
             @Override
             public void initImgData(ImageView imageView, Object imgPath) {
-                if (imgPath.equals("1"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.select_full));
-                if (imgPath.equals("2"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.select_bg));
-                if (imgPath.equals("3"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.select_bg_no));
-            }
+                //可在这里控制图片的加载，
+                //ImageLoader.getInstance().displayImage(imgPath+"", imageView, options);
+                //((SimpleDraweeView)imageView).setImageURI(Uri.parse(imgPath+""));
+                 }
         });
         banner.setDataSource(drawables);
 
