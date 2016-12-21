@@ -99,10 +99,11 @@ public class Banner extends ViewPager {
 
     public void setDataSource(Object dataSource) {
         mDataSource.clear();
-        if (!(dataSource instanceof List)) {
+        if (!(dataSource instanceof List) || dataSource == null) {
             return;
         }
         List<Object> data = (List<Object>) dataSource;
+        if (data.isEmpty()) return;
         dataSourceSize = data.size();
 
         if (dataSourceSize >= 2) {
@@ -110,7 +111,6 @@ public class Banner extends ViewPager {
             mDataSource.addAll(data);
             mDataSource.add(data.get(0));
         } else {
-            mDataSource.add(data.get(0));
             mDataSource.add(data.get(0));
         }
 
