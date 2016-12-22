@@ -6,6 +6,7 @@
 # include lib
  Gradle:
         个人并不提倡引包，本身作也就两个类，直接拷贝到项目会更方便，也好改indicator。
+        
         compile 'com.yan.banner:banner:1.0.0'
       
 # how to use
