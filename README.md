@@ -10,24 +10,25 @@ compile 'com.yan:pullrefreshlayout:(↖)'
 # how to use
 ## 
 
-     banner.resumeScroll();//回复
-     banner.pauseScroll();//暂停
-     
-     banner.setInterval(5000);
-        banner.setPageChangeDuration(500);
-        banner.setBannerDataInit(new Banner.BannerDataInit<String>() {
-            @Override
-            public ImageView initImageView() {
-                //设置图片加载的控件（如：Fresco 这里可以传入SimpleDraweeView）
-                return (ImageView) getLayoutInflater().inflate(R.layout.imageview, null);
-            }
+```
+    banner.resumeScroll();//回复
+    banner.pauseScroll();//暂停
+    
+    banner.setInterval(5000);
+    banner.setPageChangeDuration(500);
+    banner.setBannerDataInit(new Banner.BannerDataInit<String>() {
+        @Override
+        public ImageView initImageView() {
+            //设置图片加载的控件（如：Fresco 这里可以传入SimpleDraweeView）
+             return (ImageView) getLayoutInflater().inflate(R.layout.imageview, null);
+        }
 
-            @Override
-            public void initImgData(ImageView imageView, String imgPath) {
-                //可在这里控制图片的加载，
-                //ImageLoader.getInstance().displayImage(imgPath, imageView, options);
-                //((SimpleDraweeView)imageView).setImageURI(Uri.parse(imgPath));
-                 }
+        @Override
+        public void initImgData(ImageView imageView, String imgPath) {
+            //可在这里控制图片的加载，
+            //ImageLoader.getInstance().displayImage(imgPath, imageView, options);
+            //((SimpleDraweeView)imageView).setImageURI(Uri.parse(imgPath));
+            }
         });
         banner.setDataSource(drawables);
 
@@ -41,14 +42,13 @@ compile 'com.yan:pullrefreshlayout:(↖)'
         banner.attachIndicator(bannerIndicator);
         //----------------------indicator end------------------------------
 
-
         banner.setOnBannerItemClickListener(new Banner.OnBannerItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Toast.makeText(getBaseContext(), "position:" + position, Toast.LENGTH_SHORT).show();
             }
         });
-
+```
 ## LICENSE
 
     Copyright 2016 yan
