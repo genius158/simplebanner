@@ -21,35 +21,36 @@ import java.util.List;
  * Created by yan on 2016/12/3.
  */
 
-public class Banner extends ViewPager {
+public class SimpleBanner extends ViewPager {
     private long interval = 1500;
     private int currentPosition;
-    private Context context;
 
-    private MyHandler myHandler;
-    private MyPagerAdapter pagerAdapter;
+    private IntervalHandler intervalHandler;
+    private BannerPagerAdapter pagerAdapter;
     private List<Object> mDataSource;
 
     private int dataSourceSize = 0;
     private BannerIndicator indicator;
 
-    public Banner(Context context) {
-        super(context);
-        init(context);
+    private BannerDataInit bannerDataInit;
+
+    private OnBannerItemClickListener onBannerItemClickListener;
+
+    public SimpleBanner(Context context) {
+        this(context, null);
     }
 
-    public Banner(Context context, AttributeSet attrs) {
+    public SimpleBanner(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        this.context = context;
+    private void init() {
         setOffscreenPageLimit(3);
         addOnPageChangeListener(mOnPageChangeListener);
 
         mDataSource = new ArrayList<>();
-        myHandler = new MyHandler(this);
+        intervalHandler = new IntervalHandler(this);
     }
 
     public void attachIndicator(BannerIndicator bannerIndicator) {
@@ -77,10 +78,10 @@ public class Banner extends ViewPager {
         }
     }
 
-    public class BannerScroller extends Scroller {
+    private final class BannerScroller extends Scroller {
         private int mDuration = 1000;
 
-        public BannerScroller(Context context, int duration) {
+        BannerScroller(Context context, int duration) {
             super(context);
             mDuration = duration;
         }
@@ -99,11 +100,13 @@ public class Banner extends ViewPager {
 
     public void setDataSource(Object dataSource) {
         mDataSource.clear();
-        if (!(dataSource instanceof List) || dataSource == null) {
+        if (dataSource == null || !(dataSource instanceof List)) {
             return;
         }
-        List<Object> data = (List<Object>) dataSource;
-        if (data.isEmpty()) return;
+        List data = (List) dataSource;
+        if (data.isEmpty()) {
+            return;
+        }
         dataSourceSize = data.size();
 
         if (dataSourceSize >= 2) {
@@ -114,13 +117,7 @@ public class Banner extends ViewPager {
             mDataSource.add(data.get(0));
         }
 
-        if (mDataSource == null || mDataSource.size() == 1) {
-            setEnabled(false);
-            setClickable(false);
-            setFocusable(false);
-            setFocusableInTouchMode(false);
-        }
-        pagerAdapter = new MyPagerAdapter(mDataSource);
+        pagerAdapter = new BannerPagerAdapter(mDataSource);
         setAdapter(pagerAdapter);
         if (indicator != null) {
             indicator.setImageIndicator(dataSourceSize);
@@ -137,12 +134,10 @@ public class Banner extends ViewPager {
         setIndicatorSelectItem(currentPosition);
     }
 
-    ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+    private final OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float baifen, int offset) {
-
         }
-
 
         @Override
         public void onPageSelected(int position) {
@@ -164,7 +159,7 @@ public class Banner extends ViewPager {
             if (state == ViewPager.SCROLL_STATE_SETTLING) {
 
             } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                currentPosition = Banner.this.getCurrentItem();
+                currentPosition = SimpleBanner.this.getCurrentItem();
                 if (currentPosition < 1) {
                     currentPosition = pagerAdapter.getCount() - 2;
                     setCurrentItem(currentPosition, false);
@@ -183,27 +178,27 @@ public class Banner extends ViewPager {
     public void resumeScroll() {
         if (mDataSource == null || mDataSource.size() == 1)
             return;
-        myHandler.sendMessageDelayed(myHandler.obtainMessage(MyHandler.MESSAGE_CHECK), interval);
+        intervalHandler.sendMessageDelayed(intervalHandler.obtainMessage(IntervalHandler.MESSAGE_CHECK), interval);
     }
 
     public void pauseScroll() {
-        myHandler.removeMessages(MyHandler.MESSAGE_CHECK);
+        intervalHandler.removeMessages(IntervalHandler.MESSAGE_CHECK);
     }
 
-    public interface BannerDataInit {
+    public interface BannerDataInit<T> {
         ImageView initImageView();
 
-        void initImgData(ImageView imageView, Object imgPath);
+        void initImgData(ImageView imageView, T imgPath);
     }
-
-    BannerDataInit bannerDataInit;
 
     public void setBannerDataInit(BannerDataInit bannerDataInit) {
         this.bannerDataInit = bannerDataInit;
     }
 
     private void setIndicatorSelectItem(int position) {
-        if (indicator == null) return;
+        if (indicator == null) {
+            return;
+        }
         if (position == 0) {
             indicator.setSelectItem(dataSourceSize - 1);
         } else if (position == dataSourceSize + 1) {
@@ -213,48 +208,42 @@ public class Banner extends ViewPager {
         }
     }
 
-    private class MyPagerAdapter extends PagerAdapter {
-
+    private final class BannerPagerAdapter extends PagerAdapter {
         private final ArrayList<ImageView> viewList;
 
-        public MyPagerAdapter(List<Object> data) {
+        BannerPagerAdapter(List<Object> data) {
             if (data == null) {
                 viewList = new ArrayList<>();
                 return;
             }
-
             viewList = new ArrayList<>();
-
             for (int i = 0; i < data.size(); i++) {
                 ImageView imageView;
                 imageView = bannerDataInit.initImageView();
                 final int finalI = i;
-                imageView.setOnClickListener(
-                        new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (finalI == 0) {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(dataSourceSize - 1);
-                                    }
-                                } else if (finalI == dataSourceSize + 1) {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(0);
-                                    }
-                                } else {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(finalI - 1);
-                                    }
-                                }
-
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (finalI == 0) {
+                            if (onBannerItemClickListener != null) {
+                                onBannerItemClickListener.onItemClick(dataSourceSize - 1);
                             }
-                        });
+                        } else if (finalI == dataSourceSize + 1) {
+                            if (onBannerItemClickListener != null) {
+                                onBannerItemClickListener.onItemClick(0);
+                            }
+                        } else {
+                            if (onBannerItemClickListener != null) {
+                                onBannerItemClickListener.onItemClick(finalI - 1);
+                            }
+                        }
+                    }
+                });
 
                 bannerDataInit.initImgData(imageView, mDataSource.get(i));
                 viewList.add(imageView);
             }
         }
-
 
         @Override
         public boolean isViewFromObject(View arg0, Object arg1) {
@@ -267,10 +256,8 @@ public class Banner extends ViewPager {
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position,
-                                Object object) {
+        public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView(viewList.get(position));
-
         }
 
         @Override
@@ -285,44 +272,41 @@ public class Banner extends ViewPager {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(-1, -1);
             container.addView(viewList.get(position), lp);
             return viewList.get(position);
         }
-
     }
 
-    private static class MyHandler extends Handler {
-        public static final int MESSAGE_CHECK = 9001;
-        private WeakReference<Banner> innerObject;
+    private static class IntervalHandler extends Handler {
+        static final int MESSAGE_CHECK = 9001;
+        private WeakReference<SimpleBanner> innerObject;
 
-        public MyHandler(Banner context) {
+        IntervalHandler(SimpleBanner context) {
             this.innerObject = new WeakReference<>(context);
         }
 
         @Override
         public void handleMessage(Message msg) {
             if (MESSAGE_CHECK == msg.what) {
-                Banner banner = innerObject.get();
-                if (banner == null)
+                SimpleBanner simpleBanner = innerObject.get();
+                if (simpleBanner == null)
                     return;
-                if (banner.getContext() instanceof Activity) {
-                    Activity activity = (Activity) banner.getContext();
+                if (simpleBanner.getContext() instanceof Activity) {
+                    Activity activity = (Activity) simpleBanner.getContext();
                     if (activity.isFinishing())
                         return;
                 }
-                banner.showNextView();
+                simpleBanner.showNextView();
 
                 removeMessages(MESSAGE_CHECK);
-                sendMessageDelayed(obtainMessage(MESSAGE_CHECK), banner.interval);
+                sendMessageDelayed(obtainMessage(MESSAGE_CHECK), simpleBanner.interval);
                 return;
             }
             super.handleMessage(msg);
         }
 
     }
-
-    OnBannerItemClickListener onBannerItemClickListener;
 
     public void setOnBannerItemClickListener(OnBannerItemClickListener onBannerItemClickListener) {
         this.onBannerItemClickListener = onBannerItemClickListener;
