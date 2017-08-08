@@ -3,11 +3,9 @@
 # 原理
 在adapter原来的数据的最前面插入最后面的元素，最后面同理，与viewpager那种size设置成无限相比，这样做性能相对更好，更节省内存。而size无限，单它的当前项为一个较大的数值，内部计算也会相应的增加计算压力。
 
-# include lib
- Gradle:
-        个人并不提倡引包，本身作也就两个类，直接拷贝到项目会更方便，也好改indicator。
-        
-        compile 'com.yan.banner:banner:1.0.0'
+## gradle  [ ![Download](https://api.bintray.com/packages/yan157/maven/simplebanner/images/download.svg) ](https://bintray.com/yan157/maven/simplebanner/_latestVersion) ↘
+compile 'com.yan:pullrefreshlayout:(↖)'
+<br/>
       
 # how to use
 ## 
@@ -17,7 +15,7 @@
      
      banner.setInterval(5000);
         banner.setPageChangeDuration(500);
-        banner.setBannerDataInit(new Banner.BannerDataInit() {
+        banner.setBannerDataInit(new Banner.BannerDataInit<String>() {
             @Override
             public ImageView initImageView() {
                 //设置图片加载的控件（如：Fresco 这里可以传入SimpleDraweeView）
@@ -25,10 +23,10 @@
             }
 
             @Override
-            public void initImgData(ImageView imageView, Object imgPath) {
+            public void initImgData(ImageView imageView, String imgPath) {
                 //可在这里控制图片的加载，
-                //ImageLoader.getInstance().displayImage(imgPath+"", imageView, options);
-                //((SimpleDraweeView)imageView).setImageURI(Uri.parse(imgPath+""));
+                //ImageLoader.getInstance().displayImage(imgPath, imageView, options);
+                //((SimpleDraweeView)imageView).setImageURI(Uri.parse(imgPath));
                  }
         });
         banner.setDataSource(drawables);
