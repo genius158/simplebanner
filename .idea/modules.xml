@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SimpleBannerTest.iml" filepath="$PROJECT_DIR$/SimpleBannerTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplebanner.iml" filepath="$PROJECT_DIR$/simplebanner.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplebanner/simplebanner.iml" filepath="$PROJECT_DIR$/simplebanner/simplebanner.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplebanner/simplebanner-simplebanner.iml" filepath="$PROJECT_DIR$/simplebanner/simplebanner-simplebanner.iml" />

@@ -4,7 +4,7 @@ apply plugin: 'com.novoda.bintray-release'
 publish {
     userOrg = 'yan157'
     groupId = 'com.yan'
-    artifactId = 'simplebanner'
+    artifactId = 'banner'
     publishVersion = '1.0.0'
     website = 'https://github.com/genius158/simplebanner'
 }
