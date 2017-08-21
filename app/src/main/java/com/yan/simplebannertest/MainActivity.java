@@ -2,7 +2,9 @@ package com.yan.simplebannertest;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,7 +47,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         simpleBanner.setDataSource(drawables);
-
+        simpleBanner.setPageTransformer(true, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(View view, float position) {
+                final float scale = position < 0 ? position + 1f : Math.abs(1f - position);
+                view.setScaleX(scale);
+                view.setScaleY(scale);
+                view.setPivotX(view.getWidth() * 0.5f);
+                view.setPivotY(view.getHeight() * 0.5f);
+                view.setAlpha(position < -1f || position > 1f ? 0f : 1f - (scale - 1f));
+            }
+        });
         //----------------------indicator start------------------------------
         bannerIndicator = (BannerIndicator) findViewById(R.id.indicator);
         bannerIndicator.setMargins(15,15,15,15);
