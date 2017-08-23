@@ -4,7 +4,6 @@
 在adapter原来的数据的最前面插入最后面的元素，最后面同理，与viewpager那种size设置成无限相比，这样做性能相对更好，更节省内存。而size无限，单它的当前项为一个较大的数值，内部计算也会相应的增加计算压力。
  
 # gradle
-compile 'com.yan.banner:simplebanner:1.0.0'
  
 # how to use
 ## 
